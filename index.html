@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* styles.css */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        #chat-container {
+            width: 360px;
+            height: 500px;
+            /* Fixed height */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            overflow: hidden;
+            /* Hide scroll */
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: hidden;
+            /* Make messages container scrollable */
+            display: flex;
+            flex-direction: column-reverse;
+            /* Display messages from bottom to top */
+            touch-action: pan-y;
+            /* Allow vertical touch scrolling */
+            user-select: none;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            max-width: 80%;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: flyIn 0.5s forwards;
+            transition: transform 0.5s, opacity 0.5s, max-height 0.5s;
+        }
+
+        .user1 {
+            background-color: #f0e9eb;
+            color: blackr;
+            align-self: flex-end;
+        }
+
+        .user2 {
+            background-color: #e6e4f2;
+            color: black;
+            align-self: flex-start;
+        }
+
+        @keyframes flyIn {
+            0% {
+                transform: translateY(0)
+            }
+
+            25% {
+                transform: translateY(2px)
+            }
+
+            50% {
+                transform: translateY(-2px)
+            }
+
+            75% {
+                transform: translateY(2px)
+            }
+
+            100% {
+                transform: translateY(0)
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="chat-container">
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        // script.js
+
+        const messages = [
+            { user1: { message: "Hi, can you get me a better deal for The Beekman, New York, July 24-28. Standard room" } },
+            { user1: { message: "I'm seeing it for $412/night. Let's see what we can do for you!" }, delay: 500 },
+            { user2: { message: "Typing...", delay: 2000, temp: true } },
+            { user2: { message: "Ok, we've reached out to the hotel and here's what we got you:" }, delay: 1000 },
+            { user2: { message: "$350/night (saving you $70/night)," } },
+            { user2: { message: "✓ Free upgrade to King Premium Room! ($240 value!)," } },
+            { user2: { message: "✓ $100 food & beverage credit." } },
+            { user2: { message: "What do you think?" } },
+            { user1: { message: "Typing...", delay: 2000, temp: true } },
+            { user1: { message: "You did it again", delay: 1000 } },
+            { user2: { message: "On it!", delay: 1000, } },
+            { user2: { message: "Hello1" } },
+            { user1: { message: "Hey2" } },
+            { user2: { message: "Hello2" } },
+            { user1: { message: "Hey3" } },
+            { user2: { message: "Hello4" } }
+        ];
+
+        function displayMessage(user, messageText, isTemp) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', user);
+            messageElement.textContent = messageText;
+
+            const messagesContainer = document.getElementById('messages');
+
+            // Set initial styles for the message element
+            messageElement.style.maxHeight = '0';
+            messageElement.style.opacity = '0';
+            messageElement.style.transform = 'translateY(20px)';
+
+            messagesContainer.insertBefore(messageElement, messagesContainer.firstChild);
+
+            // Force reflow to apply initial styles
+            messageElement.getBoundingClientRect();
+
+            // Animate to final styles
+            requestAnimationFrame(() => {
+                messageElement.style.maxHeight = '100px';
+                messageElement.style.opacity = '1';
+                messageElement.style.transform = 'translateY(0)';
+            });
+
+            if (isTemp) {
+                messageElement.setAttribute('data-temp', 'true');
+            }
+        }
+
+        function removeTemporaryMessages() {
+            const messagesContainer = document.getElementById('messages');
+            const tempMessages = messagesContainer.querySelectorAll('[data-temp="true"]');
+            tempMessages.forEach(tempMessage => {
+                tempMessage.remove();
+            });
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+
+        async function animateMessages(messages) {
+
+
+            for (let i = 0; i < messages.length; i++) {
+
+                const user = Object.keys(messages[i])[0];
+                const messageData = messages[i][user];
+                const messageText = messageData.message;
+                const isTemp = messageData.temp || false;
+                //const delayTime = messageData.delay || 1500;
+                const delayTime = messageData.delay || 10;
+
+                displayMessage(user, messageText, isTemp);
+                await delay(delayTime);
+
+                if (isTemp) {
+                    removeTemporaryMessages();
+                }
+
+                // Trigger reflow for smooth transition
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.style.transform = 'translateY(0)';
+
+                console.log('123', 123);
+
+            }
+
+        }
+
+
+        // Start the animation
+        animateMessages(messages);
+
+        // JavaScript for mouse and touch drag scrolling
+        let isDragging = false;
+        let startPosition = 0;
+        let startScrollPosition = 0;
+
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.addEventListener('mousedown', (event) => {
+            isDragging = true;
+            startPosition = event.clientY;
+            startScrollPosition = messagesContainer.scrollTop;
+        });
+        messagesContainer.addEventListener('mousemove', (event) => {
+            if (!isDragging) return;
+            const deltaY = event.clientY - startPosition;
+            messagesContainer.scrollTop = startScrollPosition - deltaY;
+        });
+        messagesContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        messagesContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        //allow scroll on touch devices and mouse scroll
+        messagesContainer.addEventListener('touchstart', (event) => {
+            isDragging = true;
+            startPosition = event.touches[0].clientY;
+            startScrollPosition = messagesContainer.scrollTop;
+        });
+        messagesContainer.addEventListener('touchmove', (event) => {
+            if (!isDragging) return;
+            const deltaY = event.touches[0].clientY - startPosition;
+            messagesContainer.scrollTop = startScrollPosition - deltaY;
+        });
+        messagesContainer.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+        messagesContainer.addEventListener('touchcancel', () => {
+            isDragging = false;
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>
