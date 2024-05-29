@@ -235,7 +235,11 @@
         });
 
 
-
+        // Add mouse wheel scrolling functionality
+        messagesContainer.addEventListener('wheel', (event) => {
+            messagesContainer.scrollTop += event.deltaY;
+            event.preventDefault(); // Prevent default scroll behavior
+        });
 
     </script>
 </body>
