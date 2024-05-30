@@ -1,116 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Chat Simulation</title>
+    <title>Document</title>
     <style>
+        /* styles.css */
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
+
         #chat-container {
-            width: 300px;
-            height: 400px;
+            width: 360px;
+            height: 500px;
+            /* Fixed height */
             border: 1px solid #ccc;
-            border-radius: 10px;
+            border-radius: 8px;
             background-color: #fff;
+            overflow: hidden;
+            /* Hide scroll */
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
-        #chat-window {
-            flex-grow: 1;
+
+        @media only screen and (max-device-width: 480px) {
+            #chat-container {
+                width: 280px;
+                font-size: 12px;
+            }
+        }
+
+        #messages {
+            flex: 1;
             padding: 10px;
-            overflow-y: auto;
-            scroll-behavior: smooth;
+            overflow-y: hidden;
+            /* Make messages container scrollable */
+            display: flex;
+            flex-direction: column-reverse;
+            /* Display messages from bottom to top */
+            touch-action: pan-y;
+            /* Allow vertical touch scrolling */
+            user-select: none;
         }
-        #chat-input {
-            display: none;
-        }
+
         .message {
-            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            max-width: 80%;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: flyIn 0.5s forwards;
+            transition: transform 0.5s, opacity 0.5s, max-height 0.5s;
         }
-        .message.user {
-            text-align: right;
+
+        .user1 {
+            background-color: #f0e9eb;
+            color: blackr;
+            align-self: flex-end;
         }
-        .message.bot {
-            text-align: left;
+
+        .user2 {
+            background-color: #e6e4f2;
+            color: black;
+            align-self: flex-start;
         }
-        .typing-indicator {
-            display: none;
-            margin-bottom: 10px;
-            font-style: italic;
-            color: #999;
-        }
-    </style>
-</head>
-<body>
 
-<div id="chat-container">
-    <div id="chat-window"></div>
-    <div class="typing-indicator" id="typing-indicator">Bot is typing...</div>
-    <div id="chat-input">
-        <input type="text" id="input-text" placeholder="Type a message..." />
-        <button onclick="sendMessage()">Send</button>
-    </div>
-</div>
-
-<script>
-    const chatWindow = document.getElementById('chat-window');
-    const typingIndicator = document.getElementById('typing-indicator');
-
-    const messages = [
-        "Hello! How are you?",
-        "I'm doing well, thank you. How about you?",
-        "I'm good too. What have you been up to?",
-        "Just working on some projects. You?",
-        "Same here, just trying to stay productive.",
-        "That's great. Any exciting plans for the weekend?",
-        "Not yet. Maybe just relax and watch some movies. You?",
-        "Sounds nice! I might go for a hike if the weather is good.",
-        "That sounds like a great plan. Enjoy!",
-        "Thanks! You too."
-    ];
-
-    let messageIndex = 0;
-
-    function addMessage(message, sender) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', sender);
-        messageDiv.textContent = message;
-        chatWindow.appendChild(messageDiv);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    function simulateChat() {
-        if (messageIndex < messages.length) {
-            const isUserMessage = messageIndex % 2 === 0;
-            const sender = isUserMessage ? 'user' : 'bot';
-            const delay = isUserMessage ? 1000 : 2000;
-
-            if (!isUserMessage) {
-                typingIndicator.style.display = 'block';
+        @keyframes flyIn {
+            0% {
+                transform: translateY(0)
             }
 
-            setTimeout(() => {
-                if (!isUserMessage) {
-                    typingIndicator.style.display = 'none';
-                }
-                addMessage(messages[messageIndex], sender);
-                messageIndex++;
-                simulateChat();
-            }, delay);
+            25% {
+                transform: translateY(2px)
+            }
+
+            50% {
+                transform: translateY(-2px)
+            }
+
+            75% {
+                transform: translateY(2px)
+            }
+
+            100% {
+                transform: translateY(0)
+            }
         }
-    }
+    </style>
 
-    simulateChat();
-</script>
+</head>
 
+<body>
+    <div id="chat-container">
+        <div id="messages"></div>
+    </div>
+
+    <script>
+
+        const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50' height="8px" width="50px">
+                <circle fill='#000000' stroke='#000000' stroke-width='8' r='15' cx='40' cy='25'>
+                    <animate attributeName='opacity' calcMode='spline' dur='2' values='1;0;1;'
+                        keySplines='.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite' begin='-.4'></animate>
+                </circle>
+                <circle fill='#000000' stroke='#000000' stroke-width='8' r='15' cx='100' cy='25'>
+                    <animate attributeName='opacity' calcMode='spline' dur='2' values='1;0;1;'
+                        keySplines='.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite' begin='-.2'></animate>
+                </circle>
+                <circle fill='#000000' stroke='#000000' stroke-width='8' r='15' cx='160' cy='25'>
+                    <animate attributeName='opacity' calcMode='spline' dur='2' values='1;0;1;'
+                        keySplines='.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite' begin='0'></animate>
+                </circle>
+            </svg>`
+
+        const messages = [
+            { user1: { message: "Hi, can you get me a better deal for The Beekman, New York, July 24-28. Standard room" } },
+            { user1: { message: "I'm seeing it for $412/night. Let's see what we can do for you!" } },
+            { user2: { message: `${svg}Typing...`, delay: 2000, temp: true } },
+            { user2: { message: "Ok, we've reached out to the hotel and here's what we got you:" }, delay: 1000 },
+            { user2: { message: "$350/night (saving you $70/night)," } },
+            { user2: { message: "✓ Free upgrade to King Premium Room! ($240 value!)," } },
+            { user2: { message: "✓ $100 food & beverage credit." } },
+            { user2: { message: "What do you think?" } },
+            { user1: { message: `${svg}Typing...`, delay: 2000, temp: true } },
+            { user1: { message: "You did it again", delay: 1000 } },
+            { user2: { message: "On it!", delay: 1000, } },
+            { user2: { message: "Hello1" } },
+            { user1: { message: "Hey2" } },
+            { user2: { message: "Hello2" } },
+            { user1: { message: "Hey3" } },
+            { user2: { message: "Hello4" } }
+        ];
+
+        function displayMessage(user, messageText, isTemp) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', user);
+            messageElement.innerHTML = messageText;
+
+            const messagesContainer = document.getElementById('messages');
+
+            // Set initial styles for the message element
+            messageElement.style.maxHeight = '0';
+            messageElement.style.opacity = '0';
+            messageElement.style.transform = 'translateY(20px)';
+
+            messagesContainer.insertBefore(messageElement, messagesContainer.firstChild);
+
+            // Force reflow to apply initial styles
+            messageElement.getBoundingClientRect();
+
+            // Animate to final styles
+            requestAnimationFrame(() => {
+                messageElement.style.maxHeight = '100px';
+                messageElement.style.opacity = '1';
+                messageElement.style.transform = 'translateY(0)';
+            });
+
+            if (isTemp) {
+                messageElement.setAttribute('data-temp', 'true');
+            }
+        }
+
+        function removeTemporaryMessages() {
+            const messagesContainer = document.getElementById('messages');
+            const tempMessages = messagesContainer.querySelectorAll('[data-temp="true"]');
+            tempMessages.forEach(tempMessage => {
+                tempMessage.remove();
+            });
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+
+        async function animateMessages(messages) {
+
+
+            for (let i = 0; i < messages.length; i++) {
+
+                const user = Object.keys(messages[i])[0];
+                const messageData = messages[i][user];
+                const messageText = messageData.message;
+                const isTemp = messageData.temp || false;
+                const delayTime = messageData.delay || 1200;
+
+
+                displayMessage(user, messageText, isTemp);
+                await delay(delayTime);
+
+                if (isTemp) {
+                    removeTemporaryMessages();
+                }
+
+                // Trigger reflow for smooth transition
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.style.transform = 'translateY(0)';
+
+                console.log('123', 123);
+
+            }
+
+        }
+
+
+        // Start the animation
+        animateMessages(messages);
+
+        // JavaScript for mouse and touch drag scrolling
+        let isDragging = false;
+        let startPosition = 0;
+        let startScrollPosition = 0;
+
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.addEventListener('mousedown', (event) => {
+            isDragging = true;
+            startPosition = event.clientY;
+            startScrollPosition = messagesContainer.scrollTop;
+        });
+        messagesContainer.addEventListener('mousemove', (event) => {
+            if (!isDragging) return;
+            const deltaY = event.clientY - startPosition;
+            messagesContainer.scrollTop = startScrollPosition - deltaY;
+        });
+        messagesContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        messagesContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        //allow scroll on touch devices and mouse scroll
+        messagesContainer.addEventListener('touchstart', (event) => {
+            isDragging = true;
+            startPosition = event.touches[0].clientY;
+            startScrollPosition = messagesContainer.scrollTop;
+        });
+        messagesContainer.addEventListener('touchmove', (event) => {
+            if (!isDragging) return;
+            const deltaY = event.touches[0].clientY - startPosition;
+            messagesContainer.scrollTop = startScrollPosition - deltaY;
+        });
+        messagesContainer.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+        messagesContainer.addEventListener('touchcancel', () => {
+            isDragging = false;
+        });
+
+
+        // Add mouse wheel scrolling functionality
+        messagesContainer.addEventListener('wheel', (event) => {
+            messagesContainer.scrollTop += event.deltaY;
+            event.preventDefault(); // Prevent default scroll behavior
+        });
+
+    </script>
 </body>
+
 </html>
