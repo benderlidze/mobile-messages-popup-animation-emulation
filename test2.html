@@ -65,8 +65,20 @@
             margin-top: 5px;
         }
 
-        .border-radius-left {
-            border-bottom-left-radius: 0px;
+        .border-bottom-right-radius {
+            border-bottom-right-radius: 0px !important;
+        }
+
+        .border-top-right-radius {
+            border-top-right-radius: 0px !important;
+        }
+
+        .border-bottom-left-radius {
+            border-bottom-left-radius: 0px !important;
+        }
+
+        .border-top-left-radius {
+            border-top-left-radius: 0px !important;
         }
 
         .margin-bottom-big {
@@ -74,7 +86,7 @@
         }
 
         .margin-bottom-small {
-            margin-bottom: 4px;
+            margin-bottom: 4px !important;
         }
 
         @media only screen and (max-device-width: 480px) {
@@ -121,7 +133,6 @@
         .message {
             padding: 10px;
             border-radius: 16px;
-            margin: 5px 0;
             max-width: 80%;
             opacity: 0;
             transform: translateY(100%);
@@ -196,32 +207,38 @@
             </svg>`
 
         const messages = [
-            { user1: { message: "Hi, can you get me a better deal for The Beekman, New York, July 24-28. Standard room", time: "12:36 PM", classNames: "border-radius-left margin-bottom-small" } },
-            { user1: { message: "I’m seeing it for $420/night", time: "12:36 PM" } },
-            { user2: { message: `${svg}Typing...`, delay: 2000, temp: true } },
-            { user2: { message: "Let’s see what we can do for you!", time: "12:37 PM" }, delay: 1000 },
-            { user2: { message: "Ok, we’ve reached out to the hotel and here’s what we got you:", time: "12:47 PM" } },
-            { user2: { message: "$350/night (saving you $70/night)", time: "12:47 PM" } },
+            { user: "user1", message: "Hi, can you get me a better deal for The Beekman, New York, July 24-28. Standard room", time: "12:36 PM", classNames: ['border-bottom-right-radius', 'margin-bottom-small'] },
+            { user: "user1", message: "I’m seeing it for $420/night", time: "12:36 PM", classNames: ['border-top-right-radius', 'margin-bottom-big'] },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
+            { user: "user2", message: "Let’s see what we can do for you!", time: "12:37 PM", delay: 1000, classNames: ['border-bottom-left-radius', 'margin-bottom-small'] },
+            { user: "user2", message: "Ok, we’ve reached out to the hotel and here’s what we got you:", time: "12:47 PM", classNames: ['border-bottom-left-radius', 'margin-bottom-small'] },
+            { user: "user2", message: "$350/night (saving you $70/night)", time: "12:47 PM", classNames: ['border-top-left-radius', 'border-bottom-left-radius', 'margin-bottom-small'] },
             {
-                user2: {
-                    message: `
+                user: "user2",
+                message: `
                     Free upgrade to King Premium Room! ($240 value!)
                     <br> &#10004; $100 food & beverage credit
                     <br> &#10004; Free breakfast for two ($60 value/day)
                     <br> &#10004; Early check in & late checkout
                     <br> &#10004; 24 hour cancelation window
-                    `, time: "12:47 PM"
-                }
+                    `,
+                time: "12:47 PM",
+                classNames: ['border-top-left-radius', 'margin-bottom-big']
+
             },
-            { user2: { message: `${svg}Typing...`, delay: 2000, temp: true } },
-            { user2: { message: "What do you think?", time: "12:50 PM" } },
-            { user1: { message: "You did it again Winston! 🤩 Book it", time: "12:55 PM", delay: 1000 } },
-            { user2: { message: "On it! 😉", time: "12:55 PM", delay: 1000, } },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
+            { user: "user2", message: "What do you think?", time: "12:50 PM", classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
+            { user: "user1", message: "You did it again Winston! 🤩 Book it", time: "12:55 PM", delay: 1000, classNames: ['border-bottom-right-radius', 'margin-bottom-big'] },
+            { user: "user2", message: "On it! 😉", time: "12:55 PM", delay: 1000, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
         ];
 
-        function displayMessage(user, messageText, time, isTemp) {
+        function displayMessage(user, messageText, time, isTemp, classNames) {
+
+            console.log('classNames', classNames);
+
             const messageElement = document.createElement('div');
-            messageElement.classList.add('message', user);
+
+            messageElement.classList.add('message', user, ...classNames);
             messageElement.innerHTML =
                 `
                 ${messageText}
@@ -229,7 +246,6 @@
                 `
 
             const messagesContainer = document.getElementById('messages');
-
             // Set initial styles for the message element
             messageElement.style.maxHeight = '0';
             messageElement.style.opacity = '0';
@@ -271,14 +287,16 @@
 
                 console.log('messages', messages);
 
-                const user = Object.keys(messages[i])[0];
-                const messageData = messages[i][user];
+                const user = messages[i].user;
+                const messageData = messages[i];
                 const messageText = messageData.message;
                 const isTemp = messageData.temp || false;
-                const delayTime = messageData.delay || 1500;
+                // const delayTime = messageData.delay || 1500;
+                const delayTime = messageData.delay || 100;
                 const time = messageData.time || '';
+                const classNames = messageData.classNames || '';
 
-                displayMessage(user, messageText, time, isTemp);
+                displayMessage(user, messageText, time, isTemp, classNames);
                 await delay(delayTime);
 
                 if (isTemp) {
