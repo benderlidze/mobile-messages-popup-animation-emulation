@@ -51,7 +51,7 @@
         #phone-container {
             width: 400px;
             height: 490px;
-            background-image: url(images/desktop.svg);
+            background-image: url(images/phone-frame-topbar-desktop.svg);
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -93,16 +93,15 @@
             #chat-container {
                 width: 280px;
                 font-size: 12px;
-                height: 300px;
+                height: 330px;
                 /* Fixed height */
                 font-size: 12px;
-                border: 1px solid red;
             }
 
             #phone-container {
                 width: 312px;
                 height: 401px;
-                background-image: url(images/mobile.png);
+                background-image: url(images/phone-frame-topbar-mobile.svg);
             }
 
             .margin-bottom-big {
@@ -237,10 +236,12 @@
             const messageElement = document.createElement('div');
 
             messageElement.classList.add('message', user, ...classNames);
+
+            const timeHtml = time ? `<div class="time">${time}</div>` : '';
             messageElement.innerHTML =
                 `
                 ${messageText}
-                <div class="time">${time}</div>
+                ${timeHtml}
                 `
 
             const messagesContainer = document.getElementById('messages');
