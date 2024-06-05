@@ -88,11 +88,16 @@
             margin-bottom: 4px !important;
         }
 
+        .message-text {
+            line-height: 120%;
+        }
+
         .tick {
             display: inline-block;
             width: 10px;
             height: 10px;
             background-image: url(images/tick-desktop.svg);
+            margin-top: 2px;
         }
 
         @media only screen and (max-device-width: 480px) {
@@ -128,8 +133,6 @@
 
         }
 
-
-
         #messages {
             flex: 1;
             padding: 10px;
@@ -147,11 +150,17 @@
             font-family: "Proxima Nova Regular";
             padding: 8px 8px 4px 8px;
             border-radius: 16px;
-            max-width: 80%;
+            max-width: 84%;
             opacity: 0;
             transform: translateY(100%);
             animation: flyIn 0.5s forwards;
             transition: transform 1s, opacity 1s, max-height 0.5s;
+        }
+
+        .tick-block {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
         }
 
         .typing {
@@ -228,25 +237,42 @@
         const messages = [
             { user: "user1", message: "Hi, can you get me a better deal for The Beekman, New York, July 24-28. Standard room", time: "12:36 PM", classNames: ['border-bottom-right-radius', 'margin-bottom-small'] },
             { user: "user1", message: "I’m seeing it for $420/night", time: "12:36 PM", classNames: ['border-top-right-radius', 'margin-bottom-big'] },
-            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['border-bottom-left-radius', 'margin-bottom-big', "typing"] },
-            { user: "user2", message: "Let’s see what we can do for you!", time: "12:37 PM", delay: 1000, classNames: ['border-bottom-left-radius', 'margin-bottom-small'] },
-            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['border-bottom-left-radius', 'margin-bottom-big', "typing"] },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['margin-bottom-big', "typing"] },
+            { user: "user2", message: "Let’s see what we can do for you!", time: "12:37 PM", delay: 1000, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['margin-bottom-big', "typing"] },
             { user: "user2", message: "Ok, we’ve reached out to the hotel and here’s what we got you:", time: "12:47 PM", classNames: ['border-bottom-left-radius', 'margin-bottom-small'] },
             { user: "user2", message: "$350/night (saving you $70/night)", time: "12:47 PM", classNames: ['border-top-left-radius', 'border-bottom-left-radius', 'margin-bottom-small'] },
             {
                 user: "user2",
                 message: `
-                    ${tick} Free upgrade to King Premium Room! ($240 value!)
-                    <br> ${tick}  $100 food & beverage credit
-                    <br> ${tick}  Free breakfast for two ($60 value/day)
-                    <br> ${tick}  Early check in & late checkout
-                    <br> ${tick}  24 hour cancelation window
+                    <div style="display:flex;gap:6px; flex-direction: column;">
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>Free upgrade to King Premium Room!<br> ($240 value!)</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>$100 food & beverage credit</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>Free breakfast for two<br>($60 value/day)</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>Early check in & late checkout</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>24 hour cancelation window</div>
+                        </div>
+                    </div>
                     `,
                 time: "12:47 PM",
                 classNames: ['border-top-left-radius', 'margin-bottom-big']
 
             },
-            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['border-bottom-left-radius', 'margin-bottom-big', "typing"] },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['margin-bottom-big', "typing"] },
             { user: "user2", message: "What do you think?", time: "12:50 PM", classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
             { user: "user1", message: "You did it again Winston! 🤩 Book it", time: "12:55 PM", delay: 1000, classNames: ['border-bottom-right-radius', 'margin-bottom-big'] },
             { user: "user2", message: "On it! 😉", time: "12:55 PM", delay: 1000, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
@@ -263,7 +289,7 @@
             const timeHtml = time ? `<div class="time">${time}</div>` : '';
             messageElement.innerHTML =
                 `
-                ${messageText}
+                <div class="message-text">${messageText}</div>
                 ${timeHtml}
                 `
 
