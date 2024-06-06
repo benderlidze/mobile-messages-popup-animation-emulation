@@ -57,9 +57,10 @@
         }
 
         .time {
-            font-family: "Proxima Nova Light";
+            font-family: "Proxima Nova Regular";
             font-size: 10px;
-            color: #999;
+            color: #6F5F70;
+            opacity: 0.7;
             text-align: right;
             margin-top: 4px;
         }
@@ -81,11 +82,11 @@
         }
 
         .margin-bottom-big {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .margin-bottom-small {
-            margin-bottom: 4px !important;
+            margin-bottom: 2px !important;
         }
 
         .message-text {
@@ -100,6 +101,18 @@
             margin-top: 2px;
         }
 
+        .tick-block {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
+        }
+
+        .tick-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
         @media only screen and (max-device-width: 480px) {
 
             .tick {
@@ -107,6 +120,14 @@
                 width: 6px;
                 height: 7px;
                 background-image: url(images/tick-mobile.svg);
+            }
+
+            .tick-container {
+                gap: 4px;
+            }
+
+            .tick-block {
+                gap: 4px;
             }
 
             #chat-container {
@@ -131,6 +152,11 @@
                 margin-bottom: 2px;
             }
 
+            .time {
+                font-size: 8px;
+            }
+
+
         }
 
         #messages {
@@ -147,8 +173,8 @@
         }
 
         .message {
-            font-family: "Proxima Nova Regular";
-            padding: 8px 8px 4px 8px;
+            font-family: "Proxima Nova Light";
+            padding: 8px 10px 6px 8px;
             border-radius: 16px;
             max-width: 85%;
             opacity: 0;
@@ -157,11 +183,7 @@
             transition: transform 1s, opacity 1s, max-height 0.5s;
         }
 
-        .tick-block {
-            display: flex;
-            flex-direction: row;
-            gap: 6px;
-        }
+
 
         .typing {
             padding: 8px !important;
@@ -178,9 +200,6 @@
             color: #6F5F70;
             align-self: flex-start;
         }
-
-
-
 
         @keyframes flyIn {
             0% {
@@ -235,7 +254,7 @@
         const tick = `<div class="tick"></div>`
 
         const messages = [
-            { user: "user1", message: "Hi, can you get me a better deal for The Beekman, New York, July 24-28. Standard room", delay: 1000, time: "12:36 PM", classNames: ['border-bottom-right-radius', 'margin-bottom-small'] },
+            { user: "user1", message: "Hi, can you get me a better deal <br>for The Beekman, New York,<br> July 24-28. Standard room", delay: 1000, time: "12:36 PM", classNames: ['border-bottom-right-radius', 'margin-bottom-small'] },
             { user: "user1", message: "I’m seeing it for $420/night", time: "12:36 PM", classNames: ['border-top-right-radius', 'margin-bottom-big'] },
             { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['margin-bottom-big', "typing"] },
             { user: "user2", message: "Let’s see what we can do for you!", time: "12:37 PM", delay: 2700, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
@@ -245,7 +264,7 @@
             {
                 user: "user2",
                 message: `
-                    <div style="display:flex;gap:6px; flex-direction: column;">
+                    <div class="tick-container">
                         <div class="tick-block">
                             ${tick} 
                             <div>Free upgrade to King Premium Room!<br> ($240 value!)</div>
