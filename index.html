@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        @font-face {
+            font-family: 'Proxima Nova';
+            src: url('fonts/ProximaNova-Semibold.otf') format('opentype');
+            font-weight: 600;
+        }
+
+        @font-face {
+            font-family: 'Proxima Nova Regular';
+            src: url('fonts/ProximaNova-Regular.otf') format('opentype');
+        }
+
+        @font-face {
+            font-family: 'Proxima Nova Light';
+            src: url('fonts/ProximaNova-Light.otf') format('opentype');
+        }
+
+
         /* styles.css */
         body {
             display: flex;
@@ -13,28 +30,133 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Proxima Nova', sans-serif;
             background-color: #f0f0f0;
         }
 
         #chat-container {
-            width: 360px;
-            height: 500px;
+            width: 356px;
+            height: 400px;
             /* Fixed height */
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #fff;
+            background-color: #fffbff;
             overflow: hidden;
             /* Hide scroll */
             display: flex;
             flex-direction: column;
+            font-size: 16px;
+        }
+
+        #phone-container {
+            width: 400px;
+            height: 490px;
+            background-image: url(images/phone-frame-topbar-desktop.svg);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .time {
+            font-family: "Proxima Nova Regular";
+            font-size: 10px;
+            color: #6F5F70;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .border-bottom-right-radius {
+            border-bottom-right-radius: 0px !important;
+        }
+
+        .border-top-right-radius {
+            border-top-right-radius: 0px !important;
+        }
+
+        .border-bottom-left-radius {
+            border-bottom-left-radius: 0px !important;
+        }
+
+        .border-top-left-radius {
+            border-top-left-radius: 0px !important;
+        }
+
+        .margin-bottom-big {
+            margin-bottom: 6px;
+        }
+
+        .margin-bottom-small {
+            margin-bottom: 2px !important;
+        }
+
+        .message-text {
+            line-height: 120%;
+        }
+
+        .tick {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-image: url(images/tick-desktop.svg);
+            margin-top: 2px;
+        }
+
+        .tick-block {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
+        }
+
+        .tick-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         @media only screen and (max-device-width: 480px) {
+
+            .tick {
+                display: inline-block;
+                width: 6px;
+                height: 7px;
+                background-image: url(images/tick-mobile.svg);
+            }
+
+            .tick-container {
+                gap: 4px;
+            }
+
+            .tick-block {
+                gap: 4px;
+            }
+
             #chat-container {
                 width: 280px;
                 font-size: 12px;
+                height: 330px;
+                /* Fixed height */
+                font-size: 12px;
             }
+
+            #phone-container {
+                width: 312px;
+                height: 400px;
+                background-image: url(images/phone-frame-topbar-mobile.svg);
+            }
+
+            .margin-bottom-big {
+                margin-bottom: 6px;
+            }
+
+            .margin-bottom-small {
+                margin-bottom: 2px;
+            }
+
+            .time {
+                font-size: 8px;
+            }
+
+
         }
 
         #messages {
@@ -51,25 +173,31 @@
         }
 
         .message {
-            padding: 10px;
-            border-radius: 8px;
-            margin: 5px 0;
-            max-width: 80%;
+            font-family: "Proxima Nova Light";
+            padding: 8px 10px 6px 8px;
+            border-radius: 16px;
+            max-width: 85%;
             opacity: 0;
             transform: translateY(100%);
-            animation: flyIn 0.5s forwards;
-            transition: transform 0.5s, opacity 0.5s, max-height 0.5s;
+            animation: flyIn 0.7s forwards;
+            transition: transform 1s, opacity 1s, max-height 0.5s;
+        }
+
+
+
+        .typing {
+            padding: 8px !important;
         }
 
         .user1 {
             background-color: #f0e9eb;
-            color: blackr;
+            color: #6F5F70;
             align-self: flex-end;
         }
 
         .user2 {
             background-color: #e6e4f2;
-            color: black;
+            color: #6F5F70;
             align-self: flex-start;
         }
 
@@ -79,15 +207,15 @@
             }
 
             25% {
-                transform: translateY(2px)
+                transform: translateY(4px)
             }
 
             50% {
-                transform: translateY(-2px)
+                transform: translateY(-4px)
             }
 
             75% {
-                transform: translateY(2px)
+                transform: translateY(4px)
             }
 
             100% {
@@ -99,38 +227,89 @@
 </head>
 
 <body>
-    <div id="chat-container">
-        <div id="messages"></div>
+
+    <div id="phone-container">
+        <div id="chat-container">
+            <div id="messages"></div>
+        </div>
     </div>
 
     <script>
 
+        const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50' height="8px" width="50px">
+                <circle fill='#8d8090' stroke='#8d8090' stroke-width='8' r='15' cx='40' cy='25'>
+                    <animate attributeName='opacity' calcMode='spline' dur='2' values='1;0;1;'
+                        keySplines='.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite' begin='-.4'></animate>
+                </circle>
+                <circle fill='#8d8090' stroke='#8d8090' stroke-width='8' r='15' cx='100' cy='25'>
+                    <animate attributeName='opacity' calcMode='spline' dur='2' values='1;0;1;'
+                        keySplines='.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite' begin='-.2'></animate>
+                </circle>
+                <circle fill='#8d8090' stroke='#8d8090' stroke-width='8' r='15' cx='160' cy='25'>
+                    <animate attributeName='opacity' calcMode='spline' dur='2' values='1;0;1;'
+                        keySplines='.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite' begin='0'></animate>
+                </circle>
+            </svg>`
+
+        const tick = `<div class="tick"></div>`
+
         const messages = [
-            { user1: { message: "Hi, can you get me a better deal for The Beekman, New York, July 24-28. Standard room" } },
-            { user1: { message: "I'm seeing it for $412/night. Let's see what we can do for you!" }, delay: 500 },
-            { user2: { message: "Typing...", delay: 2000, temp: true } },
-            { user2: { message: "Ok, we've reached out to the hotel and here's what we got you:" }, delay: 1000 },
-            { user2: { message: "$350/night (saving you $70/night)," } },
-            { user2: { message: "✓ Free upgrade to King Premium Room! ($240 value!)," } },
-            { user2: { message: "✓ $100 food & beverage credit." } },
-            { user2: { message: "What do you think?" } },
-            { user1: { message: "Typing...", delay: 2000, temp: true } },
-            { user1: { message: "You did it again", delay: 1000 } },
-            { user2: { message: "On it!", delay: 1000, } },
-            { user2: { message: "Hello1" } },
-            { user1: { message: "Hey2" } },
-            { user2: { message: "Hello2" } },
-            { user1: { message: "Hey3" } },
-            { user2: { message: "Hello4" } }
+            { user: "user1", message: "Hi, can you get me a better deal <br>for The Beekman, New York,<br> July 24-28. Standard room", delay: 1000, time: "12:36 PM", classNames: ['border-bottom-right-radius', 'margin-bottom-small'] },
+            { user: "user1", message: "I’m seeing it for $420/night", time: "12:36 PM", classNames: ['border-top-right-radius', 'margin-bottom-big'] },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['margin-bottom-big', "typing"] },
+            { user: "user2", message: "Let’s see what we can do for you!", time: "12:37 PM", delay: 2700, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['margin-bottom-big', "typing"] },
+            { user: "user2", message: "Ok, we’ve reached out to the hotel and here’s what we got you:", time: "12:47 PM", delay: 1000, classNames: ['border-bottom-left-radius', 'margin-bottom-small'] },
+            { user: "user2", message: "$350/night (saving you $70/night)", delay: 1000, time: "12:47 PM", classNames: ['border-top-left-radius', 'border-bottom-left-radius', 'margin-bottom-small'] },
+            {
+                user: "user2",
+                message: `
+                    <div class="tick-container">
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>Free upgrade to King Premium Room!<br> ($240 value!)</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>$100 food & beverage credit</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>Free breakfast for two ($60 value/day)</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>Early check in & late checkout</div>
+                        </div>
+                        <div class="tick-block">
+                            ${tick} 
+                            <div>24 hour cancelation window</div>
+                        </div>
+                    </div>
+                    `,
+                time: "12:47 PM",
+                delay: 2700,
+                classNames: ['border-top-left-radius', 'margin-bottom-big']
+
+            },
+            { user: "user2", message: `${svg}Typing...`, delay: 2000, temp: true, classNames: ['margin-bottom-big', "typing"] },
+            { user: "user2", message: "What do you think?", time: "12:50 PM", classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
+            { user: "user1", message: "You did it again Winston! 🤩 Book it", time: "12:55 PM", delay: 1000, classNames: ['border-bottom-right-radius', 'margin-bottom-big'] },
+            { user: "user2", message: "On it! 😉", time: "12:55 PM", delay: 1000, classNames: ['border-bottom-left-radius', 'margin-bottom-big'] },
         ];
 
-        function displayMessage(user, messageText, isTemp) {
+        function displayMessage(user, messageText, time, isTemp, classNames) {
+
             const messageElement = document.createElement('div');
-            messageElement.classList.add('message', user);
-            messageElement.textContent = messageText;
+            messageElement.classList.add('message', user, ...classNames);
+            const timeHtml = time ? `<div class="time">${time}</div>` : '';
+            messageElement.innerHTML =
+                `
+                <div class="message-text">${messageText}</div>
+                ${timeHtml}
+                `
 
             const messagesContainer = document.getElementById('messages');
-
             // Set initial styles for the message element
             messageElement.style.maxHeight = '0';
             messageElement.style.opacity = '0';
@@ -143,7 +322,7 @@
 
             // Animate to final styles
             requestAnimationFrame(() => {
-                messageElement.style.maxHeight = '100px';
+                messageElement.style.maxHeight = '200px';
                 messageElement.style.opacity = '1';
                 messageElement.style.transform = 'translateY(0)';
             });
@@ -168,17 +347,17 @@
 
         async function animateMessages(messages) {
 
-
             for (let i = 0; i < messages.length; i++) {
-
-                const user = Object.keys(messages[i])[0];
-                const messageData = messages[i][user];
+                const user = messages[i].user;
+                const messageData = messages[i];
                 const messageText = messageData.message;
                 const isTemp = messageData.temp || false;
                 const delayTime = messageData.delay || 1500;
+                // const delayTime = messageData.delay || 100;
+                const time = messageData.time || '';
+                const classNames = messageData.classNames || '';
 
-
-                displayMessage(user, messageText, isTemp);
+                displayMessage(user, messageText, time, isTemp, classNames);
                 await delay(delayTime);
 
                 if (isTemp) {
@@ -188,9 +367,6 @@
                 // Trigger reflow for smooth transition
                 const messagesContainer = document.getElementById('messages');
                 messagesContainer.style.transform = 'translateY(0)';
-
-                console.log('123', 123);
-
             }
 
         }
